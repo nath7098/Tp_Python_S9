@@ -1,23 +1,53 @@
 from tkinter import *
 
 
+def after_result_operation(label, label2):
+    if str(label2.cget("text")).endswith('='):
+        label2.config(text="")
+
+
 def AC_function(label, label2):
+    after_result_operation(label, label2)
     label.config(text="")
     label2.config(text="")
 
 
 def C_function(label, label2):
+    after_result_operation(label, label2)
     label.config(text="")
     label2.config(text="")
 
 
 def addition(label, label2):
+    after_result_operation(label, label2)
     if label.cget("text") != "":
-        label2.config(text=label2.cget("text") + label.cget("text") + "+")
+        label2.config(text=str(label2.cget("text")) + str(label.cget("text")) + "+")
+        label.config(text="")
+
+
+def multiplication(label, label2):
+    after_result_operation(label, label2)
+    if label.cget("text") != "":
+        label2.config(text=str(label2.cget("text")) + str(label.cget("text")) + "*")
+        label.config(text="")
+
+
+def division(label, label2):
+    after_result_operation(label, label2)
+    if label.cget("text") != "":
+        label2.config(text=str(label2.cget("text")) + str(label.cget("text")) + "/")
+        label.config(text="")
+
+
+def substraction(label, label2):
+    after_result_operation(label, label2)
+    if label.cget("text") != "":
+        label2.config(text=str(label2.cget("text")) + str(label.cget("text"))  + "-")
         label.config(text="")
 
 
 def equal_function(label, label2):
+    after_result_operation(label, label2)
     label2_txt = str(label2.cget("text"))
     if label2_txt.endswith('+') or label2_txt.endswith('-') or label2_txt.endswith('*') or label2_txt.endswith('/'):
         label2.config(text=label2_txt + label.cget("text"))
@@ -41,13 +71,13 @@ label2.grid(row=0, columnspan=4, sticky="ewns")
 buttonplus = Button(buttons_frame, text="+", command=lambda: addition(label, label2), relief="raised", width=5,
                     height=3)
 buttonplus.grid(row=2, column=3)
-buttonminus = Button(buttons_frame, text="-", command=lambda: label2.config(text="-"), relief="raised", width=5,
+buttonminus = Button(buttons_frame, text="-", command=lambda: substraction(label, label2), relief="raised", width=5,
                      height=3)
 buttonminus.grid(row=3, column=3)
-buttontimes = Button(buttons_frame, text="x", command=lambda: label2.config(text="x"), relief="raised", width=5,
+buttontimes = Button(buttons_frame, text="x", command=lambda: multiplication(label, label2), relief="raised", width=5,
                      height=3)
 buttontimes.grid(row=4, column=3)
-buttondiv = Button(buttons_frame, text="/", command=lambda: label2.config(text="/"), relief="raised", width=5, height=3)
+buttondiv = Button(buttons_frame, text="/", command=lambda: division(label, label2), relief="raised", width=5, height=3)
 buttondiv.grid(row=2, column=2)
 
 buttondequals = Button(buttons_frame, text="=", command=lambda: equal_function(label, label2), relief="raised", width=5,
