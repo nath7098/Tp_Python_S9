@@ -1,10 +1,31 @@
 from tkinter import *
+from re import *
 
 
 def after_result_operation(label, label2):
     if str(label2.cget("text")).endswith('='):
         label2.config(text="")
 
+
+def nonumber_and_endswithsymbol(label, label2):
+    regex = "[\+\-\*\/\=]"
+    lab = str(label.cget("text"))
+    lab2 = str(label2.cget("text"))
+    length = len(lab2)
+    if lab == "" and search(regex, str(lab2)[length - 1: length]):
+        return TRUE
+    elif lab == "" and not search(regex, str(lab2)[length - 1: length]):
+        return FALSE
+
+def number_and_endswithsymbol(label, label2):
+    regex = "[\+\-\*\/\=]"
+    lab = str(label.cget("text"))
+    lab2 = str(label2.cget("text"))
+    length = len(lab2)
+    if lab != "" and search(regex, str(lab2)[length - 1: length]):
+        return TRUE
+    elif lab != "" and not search(regex, str(lab2)[length - 1: length]):
+        return FALSE
 
 def AC_function(label, label2):
     after_result_operation(label, label2)
@@ -15,46 +36,91 @@ def AC_function(label, label2):
 def C_function(label, label2):
     after_result_operation(label, label2)
     label.config(text="")
-    label2.config(text="")
+    # label2.config(text=str(label2.cget("text"))[:len(str(label2.cget("text"))) - 1])
 
 
 def addition(label, label2):
     after_result_operation(label, label2)
-    if label.cget("text") != "":
+    if label.cget("text") != "" or not nonumber_and_endswithsymbol(label, label2):
         label2.config(text=str(label2.cget("text")) + str(label.cget("text")) + "+")
         label.config(text="")
 
 
 def multiplication(label, label2):
     after_result_operation(label, label2)
-    if label.cget("text") != "":
+    if label.cget("text") != "" or not nonumber_and_endswithsymbol(label, label2):
         label2.config(text=str(label2.cget("text")) + str(label.cget("text")) + "*")
         label.config(text="")
 
 
 def division(label, label2):
     after_result_operation(label, label2)
-    if label.cget("text") != "":
+    if label.cget("text") != "" or not nonumber_and_endswithsymbol(label, label2):
         label2.config(text=str(label2.cget("text")) + str(label.cget("text")) + "/")
         label.config(text="")
 
 
 def substraction(label, label2):
     after_result_operation(label, label2)
-    if label.cget("text") != "":
-        label2.config(text=str(label2.cget("text")) + str(label.cget("text"))  + "-")
+    if label.cget("text") != "" or not nonumber_and_endswithsymbol(label, label2):
+        label2.config(text=str(label2.cget("text")) + str(label.cget("text")) + "-")
         label.config(text="")
 
 
 def equal_function(label, label2):
     after_result_operation(label, label2)
     label2_txt = str(label2.cget("text"))
-    if label2_txt.endswith('+') or label2_txt.endswith('-') or label2_txt.endswith('*') or label2_txt.endswith('/'):
+    if number_and_endswithsymbol(label, label2):
         label2.config(text=label2_txt + label.cget("text"))
         label.config(text="")
-    label2_txt = str(label2.cget("text"))
-    label.config(text=eval(label2_txt))
-    label2.config(text=label2.cget("text") + "=")
+        label2_txt = str(label2.cget("text"))
+        label.config(text=eval(label2_txt))
+        label2.config(text=label2.cget("text") + "=")
+
+
+def sign_function(label, label2):
+    regexall = r"(\d+$|\(\-\d+\)|^\-\d+)$"
+    regexminus = r"(\(\-\d+\)|^\-\d+)"
+    regexendsign = r"(\d+|\(\-\d+\)|^\-\d+)[\-\+\*\/\=]$"
+
+    lab = str(label.cget("text"))
+    lab2 = str(label2.cget("text"))
+    label2.config(text=lab2 + lab)
+    label.config(text="")
+    arr = findall(regexall, lab2)
+    arrsign = findall(regexendsign, lab2)
+    if len(arr) > 0 and len(arrsign) == 0:
+        last = len(arr) - 1
+        num = str(arr[last])
+        if len(findall(regexminus, num)) > 0:
+            startindex = 2
+            endindex = len(num) - 1
+            inverted = num[startindex:endindex]
+        else:
+            inverted = str("(-" + num + ")")
+        lab2 = lab2.replace(num, inverted, 1)
+    elif len(arr) == 0 and len(arrsign) > 0:
+        print(arrsign)
+        last = len(arrsign) - 1
+        num = str(str(arrsign[last]))
+        if len(findall(regexminus, num)):
+            startindex = 2
+            endindex = len(num) - 1
+            inverted = num[startindex:endindex]
+        else:
+            inverted = str("(-" + num + ")")
+        print(num)
+        print(inverted)
+        lab2 = lab2.replace(num, inverted, 1)
+    print(lab2)
+    label2.config(text=lab2)
+    if lab2.endswith("="):
+        label.config(text=str(eval(lab2)[:len(lab2) - 1]))
+    else:
+        label.config(text=str(eval(lab2)))
+
+def input_number(num, label):
+    label.config(text=str(label.cget("text")) + num)
 
 
 
@@ -89,25 +155,27 @@ buttonAC = Button(buttons_frame, text="AC", command=lambda: AC_function(label, l
                   height=3)
 buttonAC.grid(row=2, column=1)
 
-button0 = Button(buttons_frame, text="0", command=lambda: label.config(text="0"), relief="raised", width=5, height=3)
+buttonsign = Button(buttons_frame, text="+/-", command=lambda: sign_function(label, label2), relief="raised", width=5, height=3)
+buttonsign.grid(row=6, column=0)
+button0 = Button(buttons_frame, text="0", command=lambda: input_number("0", label), relief="raised", width=5, height=3)
 button0.grid(row=6, column=1)
-button1 = Button(buttons_frame, text="1", command=lambda: label.config(text="1"), relief="raised", width=5, height=3)
+button1 = Button(buttons_frame, text="1", command=lambda: input_number("1", label), relief="raised", width=5, height=3)
 button1.grid(row=5, column=0)
-button2 = Button(buttons_frame, text="2", command=lambda: label.config(text="2"), relief="raised", width=5, height=3)
+button2 = Button(buttons_frame, text="2", command=lambda: input_number("2", label), relief="raised", width=5, height=3)
 button2.grid(row=5, column=1)
-button3 = Button(buttons_frame, text="3", command=lambda: label.config(text="3"), relief="raised", width=5, height=3)
+button3 = Button(buttons_frame, text="3", command=lambda: input_number("3", label), relief="raised", width=5, height=3)
 button3.grid(row=5, column=2)
-button4 = Button(buttons_frame, text="4", command=lambda: label.config(text="4"), relief="raised", width=5, height=3)
+button4 = Button(buttons_frame, text="4", command=lambda: input_number("4", label), relief="raised", width=5, height=3)
 button4.grid(row=4, column=0)
-button5 = Button(buttons_frame, text="5", command=lambda: label.config(text="5"), relief="raised", width=5, height=3)
+button5 = Button(buttons_frame, text="5", command=lambda: input_number("5", label), relief="raised", width=5, height=3)
 button5.grid(row=4, column=1)
-button6 = Button(buttons_frame, text="6", command=lambda: label.config(text="6"), relief="raised", width=5, height=3)
+button6 = Button(buttons_frame, text="6", command=lambda: input_number("6", label), relief="raised", width=5, height=3)
 button6.grid(row=4, column=2)
-button7 = Button(buttons_frame, text="7", command=lambda: label.config(text="7"), relief="raised", width=5, height=3)
+button7 = Button(buttons_frame, text="7", command=lambda: input_number("7", label), relief="raised", width=5, height=3)
 button7.grid(row=3, column=0)
-button8 = Button(buttons_frame, text="8", command=lambda: label.config(text="8"), relief="raised", width=5, height=3)
+button8 = Button(buttons_frame, text="8", command=lambda: input_number("8", label), relief="raised", width=5, height=3)
 button8.grid(row=3, column=1)
-button9 = Button(buttons_frame, text="9", command=lambda: label.config(text="9"), relief="raised", width=5, height=3)
+button9 = Button(buttons_frame, text="9", command=lambda: input_number("9", label), relief="raised", width=5, height=3)
 button9.grid(row=3, column=2)
 
 fenetre.mainloop()
