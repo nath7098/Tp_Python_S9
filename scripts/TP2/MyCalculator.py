@@ -15,28 +15,26 @@ class MyCalculator(Tk):
         self.menubar = Menu(self)
         self.config(menu=self.menubar)
         self.modemenu = Menu(self.menubar)
-        self.modemenu.add_command(label="Compact", command=lambda: self.set_standard_mode())
+        self.modemenu.add_command(label="Standard", command=lambda: self.set_standard_mode())
         self.modemenu.add_command(label="Scientific", command=lambda: self.set_scientific_mode())
         self.menubar.add_cascade(label="Mode", menu=self.modemenu)
         self.label = Label(self.buttons_frame, text="", bg="white", height=2)
-        self.label.grid(row=1, columnspan=4, sticky="ewns")
         self.label2 = Label(self.buttons_frame, text="", bg="white", height=2, fg="#ccc")
-        self.label2.grid(row=0, columnspan=4, sticky="ewns")
-        self.buttons_frame.grid(row=0, column=0, sticky="ewns")
         self.buttonplus = Button(self.buttons_frame, text="+", command=lambda: self.addition(), relief="raised",
-                                width=5, height=3)
+                                 width=5, height=3)
         self.buttonminus = Button(self.buttons_frame, text="-", command=lambda: self.substraction(), relief="raised",
-                                width=5, height=3)
+                                  width=5, height=3)
         self.buttontimes = Button(self.buttons_frame, text="x", command=lambda: self.multiplication(), relief="raised",
-                                width=5, height=3)
+                                  width=5, height=3)
         self.buttondiv = Button(self.buttons_frame, text="/", command=lambda: self.division(), relief="raised", width=5,
                                 height=3)
-        self.buttondequals = Button(self.buttons_frame, text="=", command=lambda: self.equal_function(), relief="raised",
-                                width=5, height=3)
+        self.buttondequals = Button(self.buttons_frame, text="=", command=lambda: self.equal_function(),
+                                    relief="raised",
+                                    width=5, height=3)
         self.buttonC = Button(self.buttons_frame, text="C", command=lambda: self.C_function(), relief="raised", width=5,
-                                height=3)
+                              height=3)
         self.buttonAC = Button(self.buttons_frame, text="AC", command=lambda: self.AC_function(), relief="raised",
-                                width=5, height=3)
+                               width=5, height=3)
         self.buttonsign = Button(self.buttons_frame, text="+/-", command=lambda: self.sign_function(), relief="raised",
                                  width=5, height=3)
         self.button0 = Button(self.buttons_frame, text="0", command=lambda: self.input_number("0"), relief="raised",
@@ -61,16 +59,21 @@ class MyCalculator(Tk):
                               width=5, height=3)
         self.buttonrpar = Button(self.buttons_frame, text=")", command=lambda: self.input_number(")"), relief="raised",
                                  width=5, height=3)
-        self.buttonlpar = Button(self.buttons_frame, text="(", command=lambda: self.input_number("(",), relief="raised",
-                                width=5, height=3)
+        self.buttonlpar = Button(self.buttons_frame, text="(", command=lambda: self.input_number("(", ),
+                                 relief="raised",
+                                 width=5, height=3)
         self.buttonpower = Button(self.buttons_frame, text="pow", command=lambda: self.power(), relief="raised",
-                                width=5, height=3)
+                                  width=5, height=3)
         self.buttoncos = Button(self.buttons_frame, text="cos", command=lambda: self.cos_function(), relief="raised",
                                 width=5, height=3)
         self.set_standard_mode()
 
     def set_scientific_mode(self):
         current_mode = SCIENTIFIC_MODE
+        self.buttons_frame.forget()
+        self.buttons_frame.grid(row=0, column=0, sticky="ewns")
+        self.label.grid(row=1, columnspan=5, sticky="ewns")
+        self.label2.grid(row=0, columnspan=5, sticky="ewns")
         self.buttonplus.grid(row=2, column=3)
         self.buttonminus.grid(row=3, column=3)
         self.buttontimes.grid(row=4, column=3)
@@ -89,14 +92,21 @@ class MyCalculator(Tk):
         self.button9.grid(row=3, column=2)
         self.buttonC.grid(row=2, column=0)
         self.buttonAC.grid(row=2, column=1)
-        self.buttonrpar.grid(row=2, column=4)
-        self.buttonlpar.grid(row=3, column=4)
+        self.buttonrpar.grid(row=3, column=4)
+        self.buttonlpar.grid(row=2, column=4)
         self.buttonpower.grid(row=4, column=4)
         self.buttoncos.grid(row=5, column=4)
 
-
     def set_standard_mode(self):
         current_mode = STANDARD_MODE
+        self.buttonrpar.grid_forget()
+        self.buttonlpar.grid_forget()
+        self.buttonpower.grid_forget()
+        self.buttoncos.grid_forget()
+        self.buttons_frame.forget()
+        self.buttons_frame.grid(row=0, column=0, sticky="ewns")
+        self.label.grid(row=1, columnspan=4, sticky="ewns")
+        self.label2.grid(row=0, columnspan=4, sticky="ewns")
         self.buttonplus.grid(row=2, column=3)
         self.buttonminus.grid(row=3, column=3)
         self.buttontimes.grid(row=4, column=3)
