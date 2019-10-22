@@ -67,6 +67,12 @@ class MyCalculator(Tk):
                                   width=5, height=3)
         self.buttoncos = Button(self.buttons_frame, text="cos", command=lambda: self.cos_function(), relief="raised",
                                 width=5, height=3)
+        self.buttonsin = Button(self.buttons_frame, text="sin", command=lambda: self.sin_function(), relief="raised",
+                                width=5, height=3)
+        self.buttontan = Button(self.buttons_frame, text="tan", command=lambda: self.tan_function(), relief="raised",
+                                width=5, height=3)
+        self.buttondot = Button(self.buttons_frame, text=".", command=lambda: self.input_dot(), relief="raised",
+                                width=5, height=3)
         self.set_standard_mode()
 
     def init_grid(self):
@@ -100,6 +106,9 @@ class MyCalculator(Tk):
         self.buttonlpar.grid(row=2, column=4)
         self.buttonpower.grid(row=4, column=4)
         self.buttoncos.grid(row=5, column=4)
+        self.buttonsin.grid(row=6, column=4)
+        self.buttontan.grid(row=6, column=3)
+        self.buttondot.grid(row=6, column=2)
 
     def set_standard_mode(self):
         # current_mode = STANDARD_MODE
@@ -113,9 +122,20 @@ class MyCalculator(Tk):
         self.statementPrinter.grid(row=0, columnspan=4, sticky="ewns")
         self.init_grid()
 
+    def input_number(self, num):
+        self.singlePrinter.config(text=str(self.singlePrinter.cget("text")) + num)
+
+    def input_dot(self):
+        regex_dot = r"(\d+\.\d+)"
+        single = str(self.singlePrinter.cget("text"))
+        array_dotted_number = findall(regex_dot, single)
+        if len(array_dotted_number) == 0:
+            self.singlePrinter.config(text=str(self.singlePrinter.cget("text")) + ".")
+
     def reset_equal_pushed(self):
         if self.equal_pushed:
             self.equal_pushed = False
+            self.statementPrinter.config(text="")
 
     def sign_function(self):
         # definition des regex
@@ -192,18 +212,18 @@ class MyCalculator(Tk):
 
     # Fonction pour le boutton AC
     def ac_function(self):
-        self.after_result_operation()
+        self.reset_equal_pushed()
         self.singlePrinter.config(text="")
         self.statementPrinter.config(text="")
 
     # Fonction pour le boutton C
     def c_function(self):
-        self.after_result_operation()
+        self.reset_equal_pushed()
         self.singlePrinter.config(text="")
 
     # Fonction du Cosinus
     def cos_function(self):
-        self.after_result_operation()
+        self.reset_equal_pushed()
         single = str(self.singlePrinter.cget("text"))
         statement = str(self.statementPrinter.cget("text"))
 
@@ -217,10 +237,47 @@ class MyCalculator(Tk):
             self.singlePrinter.config(text="")
             statement = str(self.statementPrinter.cget("text"))
             self.singlePrinter.config(text=eval(statement))
+            self.equal_pushed = True
+
+    # Fonction du Cosinus
+    def sin_function(self):
+        self.reset_equal_pushed()
+        single = str(self.singlePrinter.cget("text"))
+        statement = str(self.statementPrinter.cget("text"))
+
+        if self.numberin_singleprinter_and_statement_endswithsymbol():
+            self.statementPrinter.config(text=statement + "sin(" + single + ")")
+            self.singlePrinter.config(text="")
+            statement = str(self.statementPrinter.cget("text"))
+            self.singlePrinter.config(text=eval(statement))
+        elif self.equal_pushed or (statement == "" and single != ""):
+            self.statementPrinter.config(text="sin(" + single + ")")
+            self.singlePrinter.config(text="")
+            statement = str(self.statementPrinter.cget("text"))
+            self.singlePrinter.config(text=eval(statement))
+            self.equal_pushed = True
+
+    # Fonction du Cosinus
+    def tan_function(self):
+        self.reset_equal_pushed()
+        single = str(self.singlePrinter.cget("text"))
+        statement = str(self.statementPrinter.cget("text"))
+
+        if self.numberin_singleprinter_and_statement_endswithsymbol():
+            self.statementPrinter.config(text=statement + "tan(" + single + ")")
+            self.singlePrinter.config(text="")
+            statement = str(self.statementPrinter.cget("text"))
+            self.singlePrinter.config(text=eval(statement))
+        elif self.equal_pushed or (statement == "" and single != ""):
+            self.statementPrinter.config(text="tan(" + single + ")")
+            self.singlePrinter.config(text="")
+            statement = str(self.statementPrinter.cget("text"))
+            self.singlePrinter.config(text=eval(statement))
+            self.equal_pushed = True
 
     # Fonction pour l'addition
     def addition(self):
-        self.after_result_operation()
+        self.reset_equal_pushed()
         if self.singlePrinter.cget("text") != "" or not self.nonumberin_singleprinter_and_statement_endswithsymbol():
             if self.equal_pushed:
                 self.statementPrinter.config(text=str(self.singlePrinter.cget("text")) + "+")
@@ -243,7 +300,7 @@ class MyCalculator(Tk):
 
     # Fonction pour la multiplication
     def multiplication(self):
-        self.after_result_operation()
+        self.reset_equal_pushed()
         if self.singlePrinter.cget("text") != "" or not self.nonumberin_singleprinter_and_statement_endswithsymbol():
             if self.equal_pushed:
                 self.statementPrinter.config(text=str(self.singlePrinter.cget("text")) + "*")
@@ -254,7 +311,7 @@ class MyCalculator(Tk):
 
     # Fonction pour la puissance
     def power(self):
-        self.after_result_operation()
+        self.reset_equal_pushed()
         if self.singlePrinter.cget("text") != "" or not self.nonumberin_singleprinter_and_statement_endswithsymbol():
             if self.equal_pushed:
                 self.statementPrinter.config(text=str(self.singlePrinter.cget("text")) + "**")
@@ -265,7 +322,7 @@ class MyCalculator(Tk):
 
     # Fonction pour la division
     def division(self):
-        self.after_result_operation()
+        self.reset_equal_pushed()
         if self.singlePrinter.cget("text") != "" or not self.nonumberin_singleprinter_and_statement_endswithsymbol():
             if self.equal_pushed:
                 self.statementPrinter.config(text=str(self.singlePrinter.cget("text")) + "/")
