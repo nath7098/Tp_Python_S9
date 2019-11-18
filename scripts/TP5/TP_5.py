@@ -1,6 +1,6 @@
 import sqlite3
 import csv
-from scripts.TP5.utils import *
+from scripts.TP5.database_utils import *
 
 if __name__ == '__main__':
 
