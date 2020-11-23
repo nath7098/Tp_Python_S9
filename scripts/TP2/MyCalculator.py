@@ -257,7 +257,7 @@ class MyCalculator(Tk):
             self.singlePrinter.config(text=eval(statement))
             self.equal_pushed = True
 
-    # Fonction du Cosinus
+    # Fonction de tangente
     def tan_function(self):
         self.reset_equal_pushed()
         single = str(self.singlePrinter.cget("text"))
